@@ -62,7 +62,7 @@ KNN.prototype._majority = function(k, sortedList) {
   return +mostFreqDist;
 }
 
-/*points is [vector, classification]
+/*points is [[vector, classification]]
 
 */
 
@@ -72,11 +72,26 @@ KNN.prototype.predictSingle = function(vector) {
 }
 
 KNN.prototype.predict = function(arrayOfVectors) {
-  var predictionsArr = [];
+  var arrayOfClassifications = [];
   for (var i=0; i<arrayOfVectors.length; i++) {
-    predictionsArr.push(this.predictSingle(arrayOfVectors[i]));
+    arrayOfClassifications.push(this.predictSingle(arrayOfVectors[i]));
   }
-  return predictionsArr;
+  return arrayOfClassifications;
 }
+
+KNN.prototype.score = function(data) {
+  var arrayOfVectors = data.map(function (subArr) {
+    return subArr[0];
+  });
+  var arrayOfClassifications = this.predict(arrayOfVectors);
+  var numOfMatchedClassifications = 0;
+  for (var i=0; i<arrayOfClassifications.length; i++) {
+    if (arrayOfClassifications[i] === data[i][1]) {
+      numOfMatchedClassifications++;
+    }
+  }
+  return numOfMatchedClassifications/data.length;
+}
+
 
 module.exports = KNN
